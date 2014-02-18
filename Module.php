@@ -13,8 +13,9 @@ use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use ZendServer\Log\Log;
 use Zend\EventManager\Event;
+use Zend\ModuleManager\Feature\ConfigProviderInterface;
 
-class Module implements AutoloaderProviderInterface, BootstrapListenerInterface
+class Module implements AutoloaderProviderInterface, BootstrapListenerInterface, ConfigProviderInterface
 {
     public function getAutoloaderConfig()
     {
@@ -42,4 +43,17 @@ class Module implements AutoloaderProviderInterface, BootstrapListenerInterface
 		    });
 		}
 	}
+	/* (non-PHPdoc)
+	 * @see \Zend\ModuleManager\Feature\ConfigProviderInterface::getConfig()
+	 */
+	public function getConfig() {
+		return array(
+            	'view_manager' => array(
+            		'template_path_stack' => array(
+            				__DIR__ . '/views',
+            		),
+            	),
+            );
+	}
+
 }
