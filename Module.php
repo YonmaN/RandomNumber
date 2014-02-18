@@ -10,8 +10,11 @@
 namespace RandomNumber;
 
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
+use Zend\ModuleManager\Feature\BootstrapListenerInterface;
+use ZendServer\Log\Log;
+use Zend\EventManager\Event;
 
-class Module implements AutoloaderProviderInterface
+class Module implements AutoloaderProviderInterface, BootstrapListenerInterface
 {
     public function getAutoloaderConfig()
     {
@@ -23,4 +26,20 @@ class Module implements AutoloaderProviderInterface
             ),
         );
     }
+    
+	/* (non-PHPdoc)
+	 * @see \Zend\ModuleManager\Feature\BootstrapListenerInterface::onBootstrap()
+	 */
+	public function onBootstrap(\Zend\EventManager\EventInterface $e) {
+		if ($e->getParam('devbar',false)) {
+		    Log::alert(__METHOD__);
+		    $app = $e->getApplication(); /* @var $app \Zend\Mvc\Application */
+		    $events = $app->getEventManager();
+		    $randomNumber = new RandomNumber();
+		    /// register at least before EVENT_DISPATCH
+		    $events->attach('DevBarModules', function (Event $e) use ($randomNumber) {
+		    	return array(__NAMESPACE__ => $randomNumber->random());
+		    });
+		}
+	}
 }

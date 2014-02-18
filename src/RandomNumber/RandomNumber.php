@@ -1,6 +1,7 @@
 <?php
 namespace RandomNumber;
 
+use ZendServer\Log\Log;
 class RandomNumber
 {
     public function random() {
