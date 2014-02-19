@@ -14,6 +14,7 @@ use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use ZendServer\Log\Log;
 use Zend\EventManager\Event;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Zend\View\Model\ViewModel;
 
 class Module implements AutoloaderProviderInterface, BootstrapListenerInterface, ConfigProviderInterface
 {
@@ -35,11 +36,13 @@ class Module implements AutoloaderProviderInterface, BootstrapListenerInterface,
 		if ($e->getParam('devbar',false)) {
 		    Log::alert(__METHOD__);
 		    $app = $e->getApplication(); /* @var $app \Zend\Mvc\Application */
-		    $events = $app->getEventManager();
-		    $randomNumber = new RandomNumber();
-		    /// register at least before EVENT_DISPATCH
-		    $events->attach('DevBarModules', function (Event $e) use ($randomNumber) {
-		    	return array(__NAMESPACE__ => $randomNumber->random());
+		    $events = $app->getEventManager()->getSharedManager();
+		    /// register before EVENT_DISPATCH at the latest
+		    $events->attach('devbar', 'DevBarModules', function (Event $e) {
+    		    $randomNumber = new RandomNumber();
+    		    $viewModel = new ViewModel(array('randomnumber' => $randomNumber->random()));
+    		    $viewModel->setTemplate('random/randomnumber.phtml');
+		    	return $viewModel;
 		    });
 		}
 	}
