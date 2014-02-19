@@ -2,9 +2,9 @@
 namespace RandomNumber;
 
 use Zend\View\Model\ViewModel;
-use DevBar\Listener\AbstractDevBarModule;
+use DevBar\Listener\AbstractDevBarProducer;
 
-class DevBarModule extends AbstractDevBarModule
+class DevBarProducer extends AbstractDevBarProducer
 {
     /**
      * @return \Zend\View\Model\ViewModel

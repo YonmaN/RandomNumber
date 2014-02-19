@@ -12,11 +12,11 @@ namespace RandomNumber;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use ZendServer\Log\Log;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use DevBar\ModuleManager\Feature\DevBarModuleProviderInterface;
+use DevBar\ModuleManager\Feature\DevBarProducerProviderInterface;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 
-class Module implements AutoloaderProviderInterface, ConfigProviderInterface, DevBarModuleProviderInterface, ServiceProviderInterface
+class Module implements AutoloaderProviderInterface, ConfigProviderInterface, DevBarProducerProviderInterface, ServiceProviderInterface
 {
     public function getAutoloaderConfig()
     {
@@ -47,7 +47,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, De
 	 */
 	public function getDevBarProducers(EventInterface $e) {
 	    $sm = $e->getApplication()->getServiceManager();
-		return array($sm->get('RandomNumber\DevBarModule'));
+		return array($sm->get('RandomNumber\DevBarProducer'));
 	}
 	
 	/* (non-PHPdoc)
@@ -55,7 +55,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, De
 	 */
 	public function getServiceConfig() {
 		return array(
-			'invokables' => array('RandomNumber\DevBarModule' => 'RandomNumber\DevBarModule')
+			'invokables' => array('RandomNumber\DevBarProducer' => 'RandomNumber\DevBarProducer')
 		);
 	}
 
