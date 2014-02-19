@@ -10,13 +10,13 @@
 namespace RandomNumber;
 
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use ZendServer\Log\Log;
-use Zend\EventManager\Event;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\View\Model\ViewModel;
+use DevBar\ModuleManager\Feature\DevBarModuleProviderInterface;
+use Zend\EventManager\EventInterface;
+use Zend\ModuleManager\Feature\ServiceProviderInterface;
 
-class Module implements AutoloaderProviderInterface, BootstrapListenerInterface, ConfigProviderInterface
+class Module implements AutoloaderProviderInterface, ConfigProviderInterface, DevBarModuleProviderInterface, ServiceProviderInterface
 {
     public function getAutoloaderConfig()
     {
@@ -28,19 +28,8 @@ class Module implements AutoloaderProviderInterface, BootstrapListenerInterface,
             ),
         );
     }
-    
-	/* (non-PHPdoc)
-	 * @see \Zend\ModuleManager\Feature\BootstrapListenerInterface::onBootstrap()
-	 */
-	public function onBootstrap(\Zend\EventManager\EventInterface $e) {
-		if ($e->getParam('devbar',false)) {
-		    Log::alert(__METHOD__);
-		    $app = $e->getApplication(); /* @var $app \Zend\Mvc\Application */
-		    $events = $app->getEventManager();
-		    $events->attach(new DevBarModule());
-		}
-	}
-	/* (non-PHPdoc)
+
+    /* (non-PHPdoc)
 	 * @see \Zend\ModuleManager\Feature\ConfigProviderInterface::getConfig()
 	 */
 	public function getConfig() {
@@ -52,5 +41,24 @@ class Module implements AutoloaderProviderInterface, BootstrapListenerInterface,
             	),
             );
 	}
+	
+	/* (non-PHPdoc)
+	 * @see \DevBar\ModuleManager\Feature\DevBarModuleProviderInterface::getDevBarProducers()
+	 */
+	public function getDevBarProducers(EventInterface $e) {
+	    $sm = $e->getApplication()->getServiceManager();
+		return array($sm->get('RandomNumber\DevBarModule'));
+	}
+	
+	/* (non-PHPdoc)
+	 * @see \Zend\ModuleManager\Feature\ServiceProviderInterface::getServiceConfig()
+	 */
+	public function getServiceConfig() {
+		return array(
+			'invokables' => array('RandomNumber\DevBarModule' => 'RandomNumber\DevBarModule')
+		);
+	}
+
+
 
 }
