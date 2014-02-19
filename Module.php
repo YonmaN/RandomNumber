@@ -36,14 +36,8 @@ class Module implements AutoloaderProviderInterface, BootstrapListenerInterface,
 		if ($e->getParam('devbar',false)) {
 		    Log::alert(__METHOD__);
 		    $app = $e->getApplication(); /* @var $app \Zend\Mvc\Application */
-		    $events = $app->getEventManager()->getSharedManager();
-		    /// register before EVENT_DISPATCH at the latest
-		    $events->attach('devbar', 'DevBarModules', function (Event $e) {
-    		    $randomNumber = new RandomNumber();
-    		    $viewModel = new ViewModel(array('randomnumber' => $randomNumber->random()));
-    		    $viewModel->setTemplate('random/randomnumber.phtml');
-		    	return $viewModel;
-		    });
+		    $events = $app->getEventManager();
+		    $events->attach(new DevBarModule());
 		}
 	}
 	/* (non-PHPdoc)
