@@ -15,8 +15,9 @@ use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use DevBar\ModuleManager\Feature\DevBarProducerProviderInterface;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
+use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 
-class Module implements AutoloaderProviderInterface, ConfigProviderInterface, DevBarProducerProviderInterface, ServiceProviderInterface
+class Module implements AutoloaderProviderInterface, ConfigProviderInterface, DevBarProducerProviderInterface, ServiceProviderInterface, BootstrapListenerInterface
 {
     public function getAutoloaderConfig()
     {
@@ -33,13 +34,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, De
 	 * @see \Zend\ModuleManager\Feature\ConfigProviderInterface::getConfig()
 	 */
 	public function getConfig() {
-		return array(
-            	'view_manager' => array(
-            		'template_path_stack' => array(
-            				__DIR__ . '/views',
-            		),
-            	),
-            );
+		return include "config/module.config.php";
 	}
 	
 	/* (non-PHPdoc)
@@ -60,5 +55,19 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, De
 	}
 
 
+	/*
+	 * (non-PHPdoc)
+	 * @see \Zend\ModuleManager\Feature\BootstrapListenerInterface::onBootstrap()
+	 */
+	public function onBootstrap(EventInterface $e) {
+	    /// add ACL entries
+	    $serviceManager = $e->getApplication()->getServiceManager();
+	    $identityAcl = $serviceManager->get('ZendServerIdentityAcl');
+	    $identityAcl->addResource('route:RandomNumber');
+	    $identityAcl->allow('administrator', 'route:RandomNumber');
+	    $licenseAcl = $serviceManager->get('ZendServerLicenseAcl');
+	    $licenseAcl->addResource('route:RandomNumber');
+	    $licenseAcl->allow(null, 'route:RandomNumber');
+	}
 
 }

@@ -1,3 +1,33 @@
-<?php echo $randomnumber ?>
+<div class="zdb-toolbar-entry zdb-random-details">
+    <div class="zdb-toolbar-preview">
+    	<img alt="Request function calls" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAIMSURBVHjarJRNSFRRGIZnptFKITWQiHBRuKiFghhiuzQZwYXgwlq0lWzpIkGzhWhQ4kLdRbgQ3ERuhBblbFrkok2liSJojpj9gH8k/ned2/PBO3C8TijohYdz7rnnfPd9v++cE/Z9P3SaTyR0yk80Ho8fNSesNq2VWCx2LIVRaIQNWIF7J7V8Hx7Daym7dtwURdOMXYUnsARt8Ei2s2BH/UP2SV34f3+8AYUwA79gD9bgFnxJZ59gY5rbEAx4Hm6rPy0129AKIzAM7+CMUyx7euECPHAtF8C8o7odcuAtPIWX0AN/FTDprB2CbnPmKvwuu6boG5TAC2iGP/AKaiABq1AOz7C7SHtRP8oKFiVPtpfhqwJUwAf4Ce9VNFPcLwfrkK8Cb7gKzUax+glZytNEU/FD38akeAIqpfSShExGAgW5qf6U2gy1C1CranfAvh0SuMxJMYV3tP5NMGCpTsaExvbUnoUrsAstMCD1feSwjLYOZm0XuAHPKaDl77PGVtRWw6jy9wk6IVd7sktrH5qDiHMBXFf/I/zW9jGlg1AEVdoBW7CpPD5XOqpUxB1L+Li2QUK7vU8WfVXWLokm/TRbxy+p97uQqYJ6lqKoNnONZNulMKek72vhrvphZzz1eE7fxn0LWK+Dn6FBT8VInYSk3tNdCvbuUWnfvW085SWSmhBQETrigj0w/k+AAQB/JJV1jpcBkAAAAABJRU5ErkJggg==" />
+        <span class="zdb-toolbar-info zsb-random-number">&nbsp;</span>
+    </div>
+</div>
 
-randomnumber!
+<script type="text/javascript">
+
+zendDevBar.registerHandler(function($, data) {
+
+	var container = zendDevBar.devBar.find('.zdb-random-details').first();
+
+	var functionsDetails = container.find('.zdb-toolbar-detail').first();
+	functionsDetails.addClass('zdb-toolbar-detail-redundant');
+	if (! data.request.id) {
+		return;
+	}
+	zendDevBar.loadJSON(
+		zendDevBar.baseUrl + '/Api/randomNumber',
+		function (response){
+			var random = response.responseData.random;
+			if (random == undefined) {
+				container.find('.zdb-toolbar-info').text('none');
+				return;
+			}
+			
+			// set functions count
+		 	container.find('.zsb-random-number').text(random);
+		});
+
+});
+</script>
