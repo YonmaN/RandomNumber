@@ -4,8 +4,29 @@
         <span class="zdb-toolbar-info zsb-random-number">&nbsp;</span>
     </div>
 </div>
-
+<style>
+.zdb-random-details img {
+	cursor: pointer;
+}
+</style>
 <script type="text/javascript">
+
+function loadRandomNumber() {
+	zendDevBar.loadJSON(
+			zendDevBar.baseUrl + '/Api/randomNumber',
+			function (response){
+
+				var container = zendDevBar.devBar.find('.zdb-random-details').first();
+				var random = response.responseData.random;
+				if (random == undefined) {
+					container.find('.zdb-toolbar-info').text('none');
+					return;
+				}
+				
+				// set functions count
+			 	container.find('.zsb-random-number').text(random);
+			});
+}
 
 zendDevBar.registerHandler(function($, data) {
 
@@ -16,18 +37,11 @@ zendDevBar.registerHandler(function($, data) {
 	if (! data.request.id) {
 		return;
 	}
-	zendDevBar.loadJSON(
-		zendDevBar.baseUrl + '/Api/randomNumber',
-		function (response){
-			var random = response.responseData.random;
-			if (random == undefined) {
-				container.find('.zdb-toolbar-info').text('none');
-				return;
-			}
-			
-			// set functions count
-		 	container.find('.zsb-random-number').text(random);
-		});
+	
+	loadRandomNumber();
 
+	container.find('img').click(loadRandomNumber);
 });
+
+
 </script>
