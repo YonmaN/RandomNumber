@@ -65,6 +65,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, De
 	    $identityAcl = $serviceManager->get('ZendServerIdentityAcl');
 	    $identityAcl->addResource('route:RandomNumber');
 	    $identityAcl->allow('administrator', 'route:RandomNumber');
+	    $identityAcl->allow('devbar', 'route:RandomNumber');
 	    $licenseAcl = $serviceManager->get('ZendServerLicenseAcl');
 	    $licenseAcl->addResource('route:RandomNumber');
 	    $licenseAcl->allow(null, 'route:RandomNumber');
